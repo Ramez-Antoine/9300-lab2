@@ -8,6 +8,10 @@ fi
 dir="$1"
 malicious_dir="$2"
 
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+whitelist="$script_dir/whitelist.txt"
+touch "$whitelist"
+
 if [ ! -d "$dir" ] || [ ! -d "$malicious_dir" ]
 then
 	echo "Directory does not exist"
@@ -57,6 +61,7 @@ do
 			if [ -e "$dir/$filename" ];then
 				echo "Cannot restore: file already exists in $dir."
 			elif mv -- "$selected" "$dir/";then
+				echo "$filename" >> "$whitelist"
 				echo "Restored $filename to $dir."
 			else echo "Failed to restore $filename."
 			fi
